@@ -28,7 +28,7 @@ emacs_module_init(struct emacs_runtime *ert)
 {
     emacs_env *env = ert->get_environment(ert);
 
-	env->funcall(env, env->intern(env, "fset"), 2, (emacs_value[]) { env->intern(env, "chdir--native-run"), env->make_function(env, 1, 1, chdir_run, NULL, NULL) });
+    env->funcall(env, env->intern(env, "fset"), 2, (emacs_value[]) { env->intern(env, "chdir--native-run"), env->make_function(env, 1, 1, chdir_run, NULL, NULL) });
     env->funcall(env, env->intern (env, "provide"), 1, (emacs_value[]) { env->intern(env, "chdir-core") });
     return 0;
 }
