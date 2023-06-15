@@ -1,0 +1,29 @@
+* emacs-chdir
+
+Syncs =/proc/self/cwd= of emacs process with changes to =(default-directory)=.
+
+Package doesn't needs any trigger, as soon as included will start working immediately.
+
+*** Installation
+
+Installation using elpaca:
+
+#+BEGIN_SRC emacs-lisp
+(use-package chdir
+  :elpaca (chdir :host github :repo "Animeshz/emacs-chdir"
+                :files (:default "chdir.el" "chdir-core.so")
+                :pre-build ("make" "all")))
+#+END_SRC
+
+Alternatively, you can use [[https://github.com/Animeshz/linux-desktop/tree/nix/packages/emacs-chdir][my nix derivation]] and install it with home-manager.
+
+Or build nix-derivation directly:
+#+BEGIN_SRC emacs-lisp
+nix build 'github:Animeshz/linux-desktop#emacs-chdir'
+#+END_SRC
+
+*** Motivation
+
+I use [[https://github.com/Animeshz/scripts/blob/main/main/pwd-launch][pwd-launch]] script to wrap launch of various applications. That allows them to open where the active/focused X window is currently.
+
+Emacs was not updating its =/proc/self/cwd= which led my applications to launch where emacs was first launched, not where it currently is. This package provides [[https://man7.org/linux/man-pages/man2/chdir.2.html][chdir()]] syscall to sync the =/proc/self/cwd= with changes to =(default-directory= elisp variable.
