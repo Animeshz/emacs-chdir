@@ -9,8 +9,17 @@
 
 (require 'chdir-core)
 
-(add-variable-watcher 'default-directory
-  (lambda (sym newval op where)
-    (chdir--native-run newval)))
+(defvar chdir--change-timer nil
+  "Timer for a short duration so extremely fast variable updates don't produce concurrency issues")
+
+(defun chdir-invoke ()
+  (chdir--native-run (file-truename default-directory))
+  (setq chdir--change-timer nil))
+
+(defun chdir--watch-run (&optional sym newval op where)
+  (when chdir--change-timer (cancel-timer chdir--change-timer))
+  (setq chdir--change-timer (run-with-timer 0.5 nil #'chdir-invoke)))
+(add-variable-watcher 'default-directory #'chdir--watch-run)
+(add-hook 'buffer-list-update-hook #'chdir--watch-run)
 
 (provide 'chdir)
